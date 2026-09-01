@@ -1,13 +1,32 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { DisplayGrid, GridsterConfig, GridsterItem, GridsterModule, GridType } from 'angular-gridster2';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+import {
+  DisplayGrid,
+  GridsterConfig,
+  GridsterItem,
+  GridsterModule,
+  GridType,
+} from 'angular-gridster2';
 import { BrandLogoIconComponent } from '../../shared/components/icon/brand-logo-icon.component';
 import { FilterBarComponent } from '../../shared/components/filter-bar/filter-bar.component';
-import { AddWidgetRequest, WidgetPickerComponent } from '../../shared/components/widget-picker/widget-picker.component';
+import {
+  AddWidgetRequest,
+  WidgetPickerComponent,
+} from '../../shared/components/widget-picker/widget-picker.component';
 import { StatCardWidgetComponent } from './widgets/stat-card-widget/stat-card-widget.component';
 import { ChartWidgetComponent } from './widgets/chart-widget/chart-widget.component';
 import { TableWidgetComponent } from './widgets/table-widget/table-widget.component';
 import { DashboardStore } from '../../core/state/dashboard.store';
-import { DATASET_LABELS, DatasetKey, DateRangePreset, WidgetSettings } from '../../core/models/widget.model';
+import {
+  DATASET_LABELS,
+  DatasetKey,
+  DateRangePreset,
+  WidgetSettings,
+} from '../../core/models/widget.model';
 
 /**
  * The dashboard page. Owns the gridster configuration and wires the store's
@@ -56,7 +75,17 @@ export class DashboardComponent {
     displayGrid: DisplayGrid.OnDragAndResize,
     pushItems: true,
     swap: true,
-    draggable: { enabled: true, dragHandleClass: 'widget-drag-handle' },
+    // `ignoreContent: true` is what actually confines dragging to the header.
+    // Without it gridster starts a drag from *anywhere* in the tile and
+    // preventDefault()s the mousedown, which stops inputs/selects/buttons
+    // inside a widget from ever receiving focus or clicks. `widget-no-drag`
+    // opts the interactive bits of the header back out of the drag handle.
+    draggable: {
+      enabled: true,
+      ignoreContent: true,
+      dragHandleClass: 'widget-drag-handle',
+      ignoreContentClass: 'widget-no-drag',
+    },
     resizable: { enabled: true },
     itemChangeCallback: (item) => this.onItemChange(item),
     itemResizeCallback: (item) => this.onItemChange(item),
@@ -64,7 +93,9 @@ export class DashboardComponent {
 
   onItemChange(item: GridsterItem): void {
     const id = (item as unknown as { id: string }).id;
-    this.store.updateLayout([{ id, x: item.x, y: item.y, rows: item.rows, cols: item.cols }]);
+    this.store.updateLayout([
+      { id, x: item.x, y: item.y, rows: item.rows, cols: item.cols },
+    ]);
   }
 
   onPresetChange(preset: DateRangePreset): void {
@@ -89,7 +120,12 @@ export class DashboardComponent {
 
   onAddWidget(request: AddWidgetRequest): void {
     const label = DATASET_LABELS[request.dataset];
-    const typeLabel = request.type === 'stat' ? 'Stat' : request.type === 'table' ? 'Table' : request.chartType ?? 'Chart';
+    const typeLabel =
+      request.type === 'stat'
+        ? 'Stat'
+        : request.type === 'table'
+          ? 'Table'
+          : (request.chartType ?? 'Chart');
     this.store.addWidget(request.type, `${label} ${typeLabel}`, {
       dataset: request.dataset,
       chartType: request.chartType,
@@ -106,7 +142,11 @@ export class DashboardComponent {
   }
 
   onReset(): void {
-    if (confirm('Reset the dashboard to its default layout? This clears your saved customizations.')) {
+    if (
+      confirm(
+        'Reset the dashboard to its default layout? This clears your saved customizations.',
+      )
+    ) {
       this.store.resetToDefaults();
     }
   }

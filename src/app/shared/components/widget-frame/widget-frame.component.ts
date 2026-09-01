@@ -1,12 +1,21 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Output,
+  input,
+} from '@angular/core';
 
 /**
  * Chrome shared by every widget type: drag handle, title, an optional
  * per-widget controls slot (dataset/chart-type pickers), a remove button,
  * and a loading overlay while the "API" call for that widget is in flight.
  *
- * Only the header carries gridster's drag-handle class, so dragging never
- * fights with scrolling a table or hovering a chart tooltip.
+ * The header carries gridster's `widget-drag-handle` class so a drag can
+ * only start there — never from the body (tables, filters, pagination) or
+ * from the header's own controls/remove button, which opt out via
+ * `widget-no-drag`. This pairs with `draggable.ignoreContent: true` in the
+ * dashboard's gridster config.
  */
 @Component({
   selector: 'app-widget-frame',
@@ -16,12 +25,12 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output, input } from 
     <div class="widget-frame">
       <header class="widget-frame__header widget-drag-handle">
         <span class="widget-frame__title">{{ title() }}</span>
-        <div class="widget-frame__controls">
+        <div class="widget-frame__controls widget-no-drag">
           <ng-content select="[frame-controls]" />
         </div>
         <button
           type="button"
-          class="widget-frame__icon-btn"
+          class="widget-frame__icon-btn widget-no-drag"
           title="Remove widget"
           aria-label="Remove widget"
           (click)="remove.emit()"

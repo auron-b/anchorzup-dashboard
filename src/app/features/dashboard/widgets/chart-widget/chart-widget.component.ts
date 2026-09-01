@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, input, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Output,
+  inject,
+  input,
+  signal,
+  computed,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { NgxEchartsDirective } from 'ngx-echarts';
@@ -13,14 +22,27 @@ import {
   WidgetSettings,
 } from '../../../../core/models/widget.model';
 import { DATASET_META } from '../../../../core/models/dataset.model';
-import { MockDataService, formatByUnit } from '../../../../core/services/mock-data.service';
+import {
+  MockDataService,
+  formatByUnit,
+} from '../../../../core/services/mock-data.service';
 import { ExportService } from '../../../../core/services/export.service';
 
 type ChartData =
   | { kind: 'series'; points: { date: string; value: number }[] }
-  | { kind: 'breakdown'; slices: { category: string; value: number; drillable?: boolean }[] };
+  | {
+      kind: 'breakdown';
+      slices: { category: string; value: number; drillable?: boolean }[];
+    };
 
-const PALETTE = ['#6c4ce0', '#9c8bf0', '#3fbf8f', '#f2a93c', '#ef6a6a', '#4fb2e0'];
+const PALETTE = [
+  '#6c4ce0',
+  '#9c8bf0',
+  '#3fbf8f',
+  '#f2a93c',
+  '#ef6a6a',
+  '#4fb2e0',
+];
 
 /**
  * Chart widget backed by Apache ECharts (via ngx-echarts).
@@ -40,10 +62,18 @@ const PALETTE = ['#6c4ce0', '#9c8bf0', '#3fbf8f', '#f2a93c', '#ef6a6a', '#4fb2e0
   imports: [WidgetFrameComponent, NgxEchartsDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-widget-frame [title]="config().title" [loading]="resource.isLoading()" (remove)="remove.emit()">
+    <app-widget-frame
+      [title]="config().title"
+      [loading]="resource.isLoading()"
+      (remove)="remove.emit()"
+    >
       <div frame-controls class="chart-controls">
         @if (drillPath().length) {
-          <button type="button" class="chart-controls__back" (click)="drillPath.set([])">
+          <button
+            type="button"
+            class="chart-controls__back"
+            (click)="drillPath.set([])"
+          >
             ← All {{ datasetLabels[config().settings.dataset] }}
           </button>
         }
@@ -53,7 +83,12 @@ const PALETTE = ['#6c4ce0', '#9c8bf0', '#3fbf8f', '#f2a93c', '#ef6a6a', '#4fb2e0
           title="Data source"
         >
           @for (key of datasetKeys; track key) {
-            <option [value]="key" [selected]="key === config().settings.dataset">{{ datasetLabels[key] }}</option>
+            <option
+              [value]="key"
+              [selected]="key === config().settings.dataset"
+            >
+              {{ datasetLabels[key] }}
+            </option>
           }
         </select>
         <div class="chart-controls__types" role="group" aria-label="Chart type">
@@ -69,7 +104,14 @@ const PALETTE = ['#6c4ce0', '#9c8bf0', '#3fbf8f', '#f2a93c', '#ef6a6a', '#4fb2e0
             </button>
           }
         </div>
-        <button type="button" class="chart-controls__export" title="Export chart as PDF" (click)="exportPdf()">⇩</button>
+        <button
+          type="button"
+          class="chart-controls__export"
+          title="Export chart as PDF"
+          (click)="exportPdf()"
+        >
+          ⇩
+        </button>
       </div>
 
       @if (resource.error()) {
@@ -95,7 +137,9 @@ export class ChartWidgetComponent {
   readonly config = input.required<WidgetConfig>();
   readonly range = input.required<DateRange>();
 
-  @Output() readonly settingsChange = new EventEmitter<Partial<WidgetSettings>>();
+  @Output() readonly settingsChange = new EventEmitter<
+    Partial<WidgetSettings>
+  >();
   @Output() readonly remove = new EventEmitter<void>();
 
   private readonly mockData = inject(MockDataService);
@@ -104,12 +148,18 @@ export class ChartWidgetComponent {
   readonly datasetLabels = DATASET_LABELS;
   readonly datasetKeys: DatasetKey[] = ['sales', 'userActivity', 'engagement'];
   readonly chartTypes: ChartType[] = ['line', 'bar', 'pie'];
-  readonly typeIcon: Record<ChartType, string> = { line: '📈', bar: '📊', pie: '🥧' };
+  readonly typeIcon: Record<ChartType, string> = {
+    line: '📈',
+    bar: '📊',
+    pie: '🥧',
+  };
 
   /** Which category we've drilled into, top-of-stack first (max depth 1 for this dataset shape). */
   readonly drillPath = signal<string[]>([]);
 
-  readonly activeChartType = computed<ChartType>(() => this.config().settings.chartType ?? 'line');
+  readonly activeChartType = computed<ChartType>(
+    () => this.config().settings.chartType ?? 'line',
+  );
 
   private echartsInstance: unknown;
 
@@ -143,12 +193,16 @@ export class ChartWidgetComponent {
     if (data.kind === 'series') {
       return buildTrendOption(data.points, unit);
     }
-    return type === 'pie' ? buildPieOption(data.slices, unit) : buildBarOption(data.slices, unit);
+    return type === 'pie'
+      ? buildPieOption(data.slices, unit)
+      : buildBarOption(data.slices, unit);
   });
 
   onDatasetChange(event: Event): void {
     this.drillPath.set([]);
-    this.settingsChange.emit({ dataset: (event.target as HTMLSelectElement).value as DatasetKey });
+    this.settingsChange.emit({
+      dataset: (event.target as HTMLSelectElement).value as DatasetKey,
+    });
   }
 
   onChartTypeChange(type: ChartType): void {
@@ -171,16 +225,34 @@ export class ChartWidgetComponent {
   }
 
   exportPdf(): void {
-    const instance = this.echartsInstance as { getDataURL: (opts: object) => string; getWidth: () => number; getHeight: () => number } | undefined;
+    const instance = this.echartsInstance as
+      | {
+          getDataURL: (opts: object) => string;
+          getWidth: () => number;
+          getHeight: () => number;
+        }
+      | undefined;
     if (!instance) return;
-    const dataUrl = instance.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#fff' });
-    this.exportSvc.exportImageToPdf(this.config().title, dataUrl, instance.getWidth(), instance.getHeight());
+    const dataUrl = instance.getDataURL({
+      type: 'png',
+      pixelRatio: 2,
+      backgroundColor: '#fff',
+    });
+    this.exportSvc.exportImageToPdf(
+      this.config().title,
+      dataUrl,
+      instance.getWidth(),
+      instance.getHeight(),
+    );
   }
 }
 
 // ---- option builders ----------------------------------------------------
 
-function buildTrendOption(points: { date: string; value: number }[], unit: 'currency' | 'count' | 'percent'): EChartsCoreOption {
+function buildTrendOption(
+  points: { date: string; value: number }[],
+  unit: 'currency' | 'count' | 'percent',
+): EChartsCoreOption {
   return {
     color: [PALETTE[0]],
     grid: { left: 8, right: 12, top: 16, bottom: 44, containLabel: true },
@@ -197,12 +269,24 @@ function buildTrendOption(points: { date: string; value: number }[], unit: 'curr
     },
     yAxis: {
       type: 'value',
-      axisLabel: { fontSize: 10, color: '#a5a2bd', formatter: (v: number) => compact(v, unit) },
+      axisLabel: {
+        fontSize: 10,
+        color: '#a5a2bd',
+        formatter: (v: number) => compact(v, unit),
+      },
       splitLine: { lineStyle: { color: '#f0eff8' } },
     },
     dataZoom: [
       { type: 'inside', throttle: 50 },
-      { type: 'slider', height: 14, bottom: 6, borderColor: 'transparent', backgroundColor: '#fafaff', fillerColor: 'rgba(108,76,224,0.15)', handleSize: 14 },
+      {
+        type: 'slider',
+        height: 14,
+        bottom: 6,
+        borderColor: 'transparent',
+        backgroundColor: '#fafaff',
+        fillerColor: 'rgba(108,76,224,0.15)',
+        handleSize: 14,
+      },
     ],
     series: [
       {
@@ -217,7 +301,10 @@ function buildTrendOption(points: { date: string; value: number }[], unit: 'curr
   };
 }
 
-function buildBarOption(slices: { category: string; value: number; drillable?: boolean }[], unit: 'currency' | 'count' | 'percent'): EChartsCoreOption {
+function buildBarOption(
+  slices: { category: string; value: number; drillable?: boolean }[],
+  unit: 'currency' | 'count' | 'percent',
+): EChartsCoreOption {
   return {
     color: [PALETTE[0]],
     grid: { left: 8, right: 12, top: 16, bottom: 32, containLabel: true },
@@ -228,12 +315,21 @@ function buildBarOption(slices: { category: string; value: number; drillable?: b
     xAxis: {
       type: 'category',
       data: slices.map((s) => s.category),
-      axisLabel: { fontSize: 10, color: '#a5a2bd', interval: 0, rotate: slices.length > 4 ? 20 : 0 },
+      axisLabel: {
+        fontSize: 10,
+        color: '#a5a2bd',
+        interval: 0,
+        rotate: slices.length > 4 ? 20 : 0,
+      },
       axisLine: { lineStyle: { color: '#e6e5f2' } },
     },
     yAxis: {
       type: 'value',
-      axisLabel: { fontSize: 10, color: '#a5a2bd', formatter: (v: number) => compact(v, unit) },
+      axisLabel: {
+        fontSize: 10,
+        color: '#a5a2bd',
+        formatter: (v: number) => compact(v, unit),
+      },
       splitLine: { lineStyle: { color: '#f0eff8' } },
     },
     series: [
@@ -248,7 +344,10 @@ function buildBarOption(slices: { category: string; value: number; drillable?: b
   };
 }
 
-function buildPieOption(slices: { category: string; value: number; drillable?: boolean }[], unit: 'currency' | 'count' | 'percent'): EChartsCoreOption {
+function buildPieOption(
+  slices: { category: string; value: number; drillable?: boolean }[],
+  unit: 'currency' | 'count' | 'percent',
+): EChartsCoreOption {
   return {
     color: PALETTE,
     tooltip: {
@@ -258,7 +357,12 @@ function buildPieOption(slices: { category: string; value: number; drillable?: b
         return `${item.name}<br/>${formatByUnit(item.value, unit)} (${item.percent}%)`;
       },
     },
-    legend: { bottom: 0, itemWidth: 10, itemHeight: 10, textStyle: { fontSize: 10, color: '#6b6784' } },
+    legend: {
+      bottom: 0,
+      itemWidth: 10,
+      itemHeight: 10,
+      textStyle: { fontSize: 10, color: '#6b6784' },
+    },
     series: [
       {
         type: 'pie',
@@ -273,8 +377,12 @@ function buildPieOption(slices: { category: string; value: number; drillable?: b
   };
 }
 
-function compact(value: number, unit: 'currency' | 'count' | 'percent'): string {
+function compact(
+  value: number,
+  unit: 'currency' | 'count' | 'percent',
+): string {
   if (unit === 'percent') return `${value}%`;
-  if (Math.abs(value) >= 1000) return `${unit === 'currency' ? '$' : ''}${(value / 1000).toFixed(1)}k`;
+  if (Math.abs(value) >= 1000)
+    return `${unit === 'currency' ? '$' : ''}${(value / 1000).toFixed(1)}k`;
   return `${unit === 'currency' ? '$' : ''}${value}`;
 }
