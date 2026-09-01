@@ -5,6 +5,7 @@ import {
   signal,
 } from '@angular/core';
 import {
+  CompactType,
   DisplayGrid,
   GridsterConfig,
   GridsterItem,
@@ -75,6 +76,11 @@ export class DashboardComponent {
     displayGrid: DisplayGrid.OnDragAndResize,
     pushItems: true,
     swap: true,
+    // Float every tile up into any gap above it, during the drag and on drop,
+    // so the grid never keeps an empty row between widgets. Trade-off: a tile
+    // can't be parked in a lower row on purpose — there must be something
+    // above it.
+    compactType: CompactType.CompactUp,
     // `ignoreContent: true` is what actually confines dragging to the header.
     // Without it gridster starts a drag from *anywhere* in the tile and
     // preventDefault()s the mousedown, which stops inputs/selects/buttons
