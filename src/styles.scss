@@ -1,0 +1,118 @@
+/* AnchorzUp Dashboard — global design tokens & resets. */
+
+:root {
+  --color-primary: #6c4ce0;
+  --color-primary-dark: #4f34b3;
+  --color-primary-light: #efe9fd;
+  --color-success: #16a34a;
+  --color-success-bg: #eafbf1;
+  --color-danger: #dc2626;
+  --danger: #dc2626;
+  --danger-bg: #fdecec;
+
+  --bg: #f5f6fb;
+  --surface: #ffffff;
+  --surface-muted: #fafaff;
+  --border: #e6e5f2;
+  --text: #201a3a;
+  --text-muted: #6b6784;
+  --text-faint: #a5a2bd;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 1px 2px rgba(32, 26, 58, 0.06);
+  --shadow-md: 0 6px 20px rgba(32, 26, 58, 0.08);
+
+  --font-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--color-primary-light);
+}
+
+/* ---- angular-gridster2 theming ----------------------------------
+   Note: gridster's own stylesheet targets the bare element selectors
+   `gridster` / `gridster-item` (it's a custom element, not a class), so
+   the override has to match that specificity, not `.gridster`. */
+
+gridster {
+  background: var(--bg) !important;
+}
+
+gridster-item {
+  background: transparent !important;
+  border-radius: var(--radius-lg);
+}
+
+/* Below the mobile breakpoint, gridster stacks items in document order and
+   drops absolute positioning — but leaves each item's fixed pixel height
+   from the desktop grid, which reads as huge gaps on a phone. Let content
+   drive the height instead once we're in that stacked layout. */
+gridster.mobile gridster-item {
+  height: auto !important;
+  position: relative !important;
+}
+
+gridster.mobile gridster-item .widget-frame {
+  min-height: 160px;
+}
+
+.gridster-item-resizable-handler {
+  z-index: 3;
+}
+
+gridster-preview {
+  background: var(--color-primary-light) !important;
+  border: 2px dashed var(--color-primary) !important;
+  border-radius: var(--radius-lg);
+  opacity: 0.6;
+}
+
+/* ---- scrollbars ---------------------------------------------------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
