@@ -5,9 +5,10 @@
 
 :host {
   display: inline-flex;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1em;
+  height: 1em;
   flex: 0 0 auto;
+  vertical-align: middle;
 }
 
 svg {

@@ -48,13 +48,16 @@
 }
 
 .widget-frame__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
-  padding: 4px 6px;
+  padding: 4px;
   border-radius: var(--radius-sm);
 
   &:hover {

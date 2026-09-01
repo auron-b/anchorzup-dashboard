@@ -5,6 +5,7 @@ import {
   Output,
   input,
 } from '@angular/core';
+import { XIconComponent } from '../icon/x-icon.component';
 
 /**
  * Chrome shared by every widget type: drag handle, title, an optional
@@ -20,6 +21,7 @@ import {
 @Component({
   selector: 'app-widget-frame',
   standalone: true,
+  imports: [XIconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="widget-frame">
@@ -35,7 +37,7 @@ import {
           aria-label="Remove widget"
           (click)="remove.emit()"
         >
-          ✕
+          <app-x-icon />
         </button>
       </header>
 

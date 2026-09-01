@@ -13,6 +13,11 @@ import { map } from 'rxjs/operators';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsCoreOption, ECElementEvent } from 'echarts/core';
 import { WidgetFrameComponent } from '../../../../shared/components/widget-frame/widget-frame.component';
+import { ArrowLeftIconComponent } from '../../../../shared/components/icon/arrow-left-icon.component';
+import { ChartLineIconComponent } from '../../../../shared/components/icon/chart-line-icon.component';
+import { ChartBarIconComponent } from '../../../../shared/components/icon/chart-bar-icon.component';
+import { ChartPieIconComponent } from '../../../../shared/components/icon/chart-pie-icon.component';
+import { DownloadIconComponent } from '../../../../shared/components/icon/download-icon.component';
 import {
   ChartType,
   DATASET_LABELS,
@@ -59,7 +64,15 @@ const PALETTE = [
 @Component({
   selector: 'app-chart-widget',
   standalone: true,
-  imports: [WidgetFrameComponent, NgxEchartsDirective],
+  imports: [
+    WidgetFrameComponent,
+    NgxEchartsDirective,
+    ArrowLeftIconComponent,
+    ChartLineIconComponent,
+    ChartBarIconComponent,
+    ChartPieIconComponent,
+    DownloadIconComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-widget-frame
@@ -74,7 +87,8 @@ const PALETTE = [
             class="chart-controls__back"
             (click)="drillPath.set([])"
           >
-            ← All {{ datasetLabels[config().settings.dataset] }}
+            <app-arrow-left-icon />
+            All {{ datasetLabels[config().settings.dataset] }}
           </button>
         }
         <select
@@ -98,9 +112,15 @@ const PALETTE = [
               class="chart-controls__type"
               [class.chart-controls__type--active]="type === activeChartType()"
               (click)="onChartTypeChange(type)"
-              [title]="type"
+              [title]="type + ' chart'"
+              [attr.aria-label]="type + ' chart'"
+              [attr.aria-pressed]="type === activeChartType()"
             >
-              {{ typeIcon[type] }}
+              @switch (type) {
+                @case ('line') { <app-chart-line-icon /> }
+                @case ('bar') { <app-chart-bar-icon /> }
+                @case ('pie') { <app-chart-pie-icon /> }
+              }
             </button>
           }
         </div>
@@ -108,9 +128,10 @@ const PALETTE = [
           type="button"
           class="chart-controls__export"
           title="Export chart as PDF"
+          aria-label="Export chart as PDF"
           (click)="exportPdf()"
         >
-          ⇩
+          <app-download-icon />
         </button>
       </div>
 
@@ -148,11 +169,6 @@ export class ChartWidgetComponent {
   readonly datasetLabels = DATASET_LABELS;
   readonly datasetKeys: DatasetKey[] = ['sales', 'userActivity', 'engagement'];
   readonly chartTypes: ChartType[] = ['line', 'bar', 'pie'];
-  readonly typeIcon: Record<ChartType, string> = {
-    line: '📈',
-    bar: '📊',
-    pie: '🥧',
-  };
 
   /** Which category we've drilled into, top-of-stack first (max depth 1 for this dataset shape). */
   readonly drillPath = signal<string[]>([]);

@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { WidgetFrameComponent } from '../../../../shared/components/widget-frame/widget-frame.component';
+import { ArrowUpIconComponent } from '../../../../shared/components/icon/arrow-up-icon.component';
+import { ArrowDownIconComponent } from '../../../../shared/components/icon/arrow-down-icon.component';
 import { DATASET_LABELS, DatasetKey, DateRange, WidgetConfig, WidgetSettings } from '../../../../core/models/widget.model';
 import { MockDataService } from '../../../../core/services/mock-data.service';
 
@@ -15,7 +17,7 @@ import { MockDataService } from '../../../../core/services/mock-data.service';
 @Component({
   selector: 'app-stat-card-widget',
   standalone: true,
-  imports: [WidgetFrameComponent],
+  imports: [WidgetFrameComponent, ArrowUpIconComponent, ArrowDownIconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-widget-frame [title]="config().title" [loading]="resource.isLoading()" (remove)="remove.emit()">
@@ -35,14 +37,18 @@ import { MockDataService } from '../../../../core/services/mock-data.service';
       } @else {
         <div class="stat-card">
           <p class="stat-card__value">{{ resource.value()?.formatted ?? '—' }}</p>
-          @if (config().settings.compareToPrevious && resource.value()) {
+          @if (config().settings.compareToPrevious && resource.value(); as v) {
             <p
               class="stat-card__delta"
-              [class.stat-card__delta--up]="(resource.value()?.deltaPct ?? 0) >= 0"
-              [class.stat-card__delta--down]="(resource.value()?.deltaPct ?? 0) < 0"
+              [class.stat-card__delta--up]="v.deltaPct >= 0"
+              [class.stat-card__delta--down]="v.deltaPct < 0"
             >
-              <span>{{ (resource.value()?.deltaPct ?? 0) >= 0 ? '▲' : '▼' }}</span>
-              {{ absPct(resource.value()?.deltaPct) }}% vs previous period
+              @if (v.deltaPct >= 0) {
+                <app-arrow-up-icon class="stat-card__delta-icon" />
+              } @else {
+                <app-arrow-down-icon class="stat-card__delta-icon" />
+              }
+              {{ absPct(v.deltaPct) }}% vs previous period
             </p>
           }
         </div>
@@ -72,7 +78,7 @@ export class StatCardWidgetComponent {
     this.settingsChange.emit({ dataset });
   }
 
-  absPct(value: number | undefined): string {
-    return Math.abs(value ?? 0).toFixed(1);
+  absPct(value: number): string {
+    return Math.abs(value).toFixed(1);
   }
 }

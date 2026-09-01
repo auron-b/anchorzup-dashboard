@@ -37,6 +37,11 @@
   font-weight: 600;
   width: fit-content;
 
+  &-icon {
+    width: 0.95em;
+    height: 0.95em;
+  }
+
   &--up {
     color: var(--color-success);
   }
