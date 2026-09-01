@@ -1,0 +1,164 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.table-controls__select {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  padding: 4px 6px;
+  color: var(--text-muted);
+  background: var(--surface);
+  font-family: inherit;
+  max-width: 120px;
+}
+
+.table-controls__export {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.table-widget__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.table-widget__filter {
+  flex: 1 1 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface-muted);
+  min-width: 0;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: var(--surface);
+  }
+}
+
+.table-widget__count {
+  font-size: 11px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.table-widget__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+table.table-widget {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    text-align: left;
+    padding: 6px 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  tbody td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  tbody tr:hover td {
+    background: var(--surface-muted);
+  }
+}
+
+.table-widget__num {
+  text-align: right;
+}
+
+.table-widget__muted {
+  color: var(--text-muted);
+}
+
+.table-widget__empty {
+  text-align: center;
+  color: var(--text-faint);
+  padding: 20px 0 !important;
+}
+
+.table-widget__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-faint);
+  flex: 0 0 auto;
+}
+
+.table-widget__pager {
+  display: flex;
+  gap: 4px;
+
+  button {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    color: var(--text-muted);
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    &:not(:disabled):hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+  }
+}
+
+.table-widget__error {
+  color: var(--color-danger);
+  font-size: 12px;
+}
