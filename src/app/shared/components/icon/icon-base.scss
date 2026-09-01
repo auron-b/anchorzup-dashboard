@@ -1,0 +1,17 @@
+// Shared chrome for every `*-icon.component.ts` in this folder. Each icon
+// component points its `styleUrl` here, so sizing/positioning lives in one
+// place. Consumers resize an icon with ordinary CSS on its host element
+// (e.g. `.dashboard-header__logo { width: 32px; height: 32px; }`).
+
+:host {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

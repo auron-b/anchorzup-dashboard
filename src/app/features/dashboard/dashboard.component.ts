@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DisplayGrid, GridsterConfig, GridsterItem, GridsterModule, GridType } from 'angular-gridster2';
+import { BrandLogoIconComponent } from '../../shared/components/icon/brand-logo-icon.component';
 import { FilterBarComponent } from '../../shared/components/filter-bar/filter-bar.component';
 import { AddWidgetRequest, WidgetPickerComponent } from '../../shared/components/widget-picker/widget-picker.component';
 import { StatCardWidgetComponent } from './widgets/stat-card-widget/stat-card-widget.component';
@@ -19,6 +20,7 @@ import { DATASET_LABELS, DatasetKey, DateRangePreset, WidgetSettings } from '../
   standalone: true,
   imports: [
     GridsterModule,
+    BrandLogoIconComponent,
     FilterBarComponent,
     WidgetPickerComponent,
     StatCardWidgetComponent,
