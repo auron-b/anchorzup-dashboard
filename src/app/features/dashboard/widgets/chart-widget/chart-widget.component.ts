@@ -78,6 +78,7 @@ const PALETTE = [
     <app-widget-frame
       [title]="config().title"
       [loading]="resource.isLoading()"
+      [flush]="true"
       (remove)="remove.emit()"
     >
       <div frame-controls class="chart-controls">
@@ -117,9 +118,15 @@ const PALETTE = [
               [attr.aria-pressed]="type === activeChartType()"
             >
               @switch (type) {
-                @case ('line') { <app-chart-line-icon /> }
-                @case ('bar') { <app-chart-bar-icon /> }
-                @case ('pie') { <app-chart-pie-icon /> }
+                @case ('line') {
+                  <app-chart-line-icon />
+                }
+                @case ('bar') {
+                  <app-chart-bar-icon />
+                }
+                @case ('pie') {
+                  <app-chart-pie-icon />
+                }
               }
             </button>
           }
@@ -271,7 +278,7 @@ function buildTrendOption(
 ): EChartsCoreOption {
   return {
     color: [PALETTE[0]],
-    grid: { left: 8, right: 12, top: 16, bottom: 44, containLabel: true },
+    grid: { left: 2, right: 10, top: 10, bottom: 26, containLabel: true },
     tooltip: {
       trigger: 'axis',
       valueFormatter: (v: unknown) => formatByUnit(Number(v), unit),
@@ -296,12 +303,13 @@ function buildTrendOption(
       { type: 'inside', throttle: 50 },
       {
         type: 'slider',
-        height: 14,
-        bottom: 6,
+        height: 12,
+        bottom: 2,
         borderColor: 'transparent',
         backgroundColor: '#fafaff',
         fillerColor: 'rgba(108,76,224,0.15)',
-        handleSize: 14,
+        handleSize: 12,
+        moveHandleSize: 3,
       },
     ],
     series: [
@@ -323,7 +331,7 @@ function buildBarOption(
 ): EChartsCoreOption {
   return {
     color: [PALETTE[0]],
-    grid: { left: 8, right: 12, top: 16, bottom: 32, containLabel: true },
+    grid: { left: 2, right: 10, top: 10, bottom: 4, containLabel: true },
     tooltip: {
       trigger: 'item',
       valueFormatter: (v: unknown) => formatByUnit(Number(v), unit),
@@ -375,19 +383,23 @@ function buildPieOption(
     },
     legend: {
       bottom: 0,
-      itemWidth: 10,
-      itemHeight: 10,
+      left: 'center',
+      icon: 'circle',
+      itemWidth: 8,
+      itemHeight: 8,
+      itemGap: 10,
       textStyle: { fontSize: 10, color: '#6b6784' },
     },
     series: [
       {
         type: 'pie',
-        radius: ['42%', '72%'],
-        center: ['50%', '44%'],
+        radius: ['42%', '66%'],
+        center: ['50%', '46%'],
         data: slices.map((s) => ({ name: s.category, value: s.value })),
-        label: { fontSize: 10, color: '#6b6784' },
+        label: { show: false },
+        labelLine: { show: false },
         itemStyle: { borderRadius: 4, borderColor: '#fff', borderWidth: 2 },
-        emphasis: { scale: true, scaleSize: 6 },
+        emphasis: { scale: true, scaleSize: 5 },
       },
     ],
   };

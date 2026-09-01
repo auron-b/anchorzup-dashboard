@@ -41,7 +41,10 @@ import { XIconComponent } from '../icon/x-icon.component';
         </button>
       </header>
 
-      <div class="widget-frame__body">
+      <div
+        class="widget-frame__body"
+        [class.widget-frame__body--flush]="flush()"
+      >
         @if (loading()) {
           <div class="widget-frame__loading" aria-live="polite">
             <span class="widget-frame__spinner"></span>
@@ -56,6 +59,8 @@ import { XIconComponent } from '../icon/x-icon.component';
 export class WidgetFrameComponent {
   readonly title = input.required<string>();
   readonly loading = input(false);
+  /** Trim the body padding right down — for content that draws its own edges (charts). */
+  readonly flush = input(false);
 
   @Output() readonly remove = new EventEmitter<void>();
 }
