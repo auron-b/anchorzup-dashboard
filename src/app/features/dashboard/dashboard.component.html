@@ -1,0 +1,86 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <div class="dashboard-header__brand">
+      <svg class="dashboard-header__logo" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="20" fill="#6c4ce0" />
+        <path
+          d="M13 12v11a7 7 0 0 0 14 0V12"
+          fill="none"
+          stroke="#fff"
+          stroke-width="3.4"
+          stroke-linecap="round"
+        />
+      </svg>
+      <div class="dashboard-header__titles">
+        <span class="dashboard-header__title">AnchorzUp</span>
+        <span class="dashboard-header__subtitle">Sales · Activity · Engagement</span>
+      </div>
+    </div>
+
+    <app-filter-bar
+      class="dashboard-header__filters"
+      [activePreset]="filters().preset"
+      [range]="filters().range"
+      (presetChange)="onPresetChange($event)"
+      (customRangeChange)="onCustomRange($event)"
+    />
+
+    <div class="dashboard-header__actions">
+      <app-widget-picker
+        [hiddenWidgets]="hiddenWidgets()"
+        (restore)="onRestore($event)"
+        (addWidget)="onAddWidget($event)"
+      />
+      <button type="button" class="dashboard-header__ghost-btn" title="Reset to default layout" (click)="onReset()">
+        Reset
+      </button>
+      <button type="button" class="dashboard-header__save-btn" (click)="onSaveLayout()">
+        {{ justSaved() ? 'Saved ✓' : 'Save Layout' }}
+      </button>
+    </div>
+  </header>
+
+  @if (!ready()) {
+    <div class="dashboard-loading">Loading your dashboard…</div>
+  } @else {
+    @if (widgets().length === 0) {
+      <div class="dashboard-empty">
+        <p>No widgets on your dashboard yet.</p>
+        <p class="dashboard-empty__hint">Use “+ Add widget” above to add a stat card, chart or table.</p>
+      </div>
+    }
+
+    <gridster [options]="gridOptions" class="dashboard-grid">
+      @for (widget of widgets(); track widget.id) {
+        <gridster-item [item]="widget" class="dashboard-grid__item">
+          @switch (widget.type) {
+            @case ('stat') {
+              <app-stat-card-widget
+                [config]="widget"
+                [range]="filters().range"
+                (settingsChange)="onSettingsChange(widget.id, $event)"
+                (remove)="onRemove(widget.id)"
+              />
+            }
+            @case ('chart') {
+              <app-chart-widget
+                [config]="widget"
+                [range]="filters().range"
+                (settingsChange)="onSettingsChange(widget.id, $event)"
+                (remove)="onRemove(widget.id)"
+              />
+            }
+            @case ('table') {
+              <app-table-widget
+                [config]="widget"
+                [range]="filters().range"
+                (settingsChange)="onSettingsChange(widget.id, $event)"
+                (remove)="onRemove(widget.id)"
+              />
+            }
+          }
+        </gridster-item>
+      }
+    </gridster>
+  }
+</div>
